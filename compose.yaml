@@ -1,0 +1,7 @@
+﻿services:
+  commonfilms:
+    image: commonfilms
+    build:
+      context: .
+      dockerfile: CommonFilms/Dockerfile
+

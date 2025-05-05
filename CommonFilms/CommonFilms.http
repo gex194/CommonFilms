@@ -1,0 +1,6 @@
+@CommonFilms_HostAddress = http://localhost:5250
+
+GET {{CommonFilms_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
