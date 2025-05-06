@@ -1,6 +1,8 @@
+using System.Text;
 using CommonFilms.Data;
 using CommonFilms.Repositories.MovieRepository;
 using CommonFilms.Repositories.UserRepository;
+using CommonFilms.Services.AuthService;
 using CommonFilms.Services.MovieService;
 using CommonFilms.Services.UserService;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,19 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+//Adding JWT Authentication
+builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey("SecretKeySuperLongSuperStrongSuperHard"u8.ToArray())
+    };
+});
+
 //Adding Db Context
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("CommonFilms"));
 
@@ -23,6 +38,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 //Registering Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddSingleton<IAuthService, AuthService>();
+
 
 var app = builder.Build();
 
@@ -37,5 +54,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    ApplicationDbContext.SeedData(dbContext);
+}
 
 app.Run();

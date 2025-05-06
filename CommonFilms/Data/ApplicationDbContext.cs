@@ -19,4 +19,20 @@ public class ApplicationDbContext : DbContext
             .HasForeignKey(m => m.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }
+
+    public static void SeedData(ApplicationDbContext context)
+    {
+        if (!context.Users.Any())
+        {
+            context.Users.AddRange(
+                new User
+                {
+                    Name = "Admin",
+                    Email = "test@test.com",
+                    Password = "test"
+                }
+            );
+            context.SaveChanges();
+        }
+    }
 }

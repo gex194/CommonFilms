@@ -27,6 +27,12 @@ public class UserRepository : IUserRepository
     {
         return await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
     }
+
+    public async Task<User?> GetByEmailAndPasswordAsync(string email, string password)
+    {
+        return await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);;
+    }
     
     public async Task<User> CreateAsync(User user)
     {
