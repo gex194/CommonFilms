@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using CommonFilms.DTOs;
 using CommonFilms.Models.Entities;
 using CommonFilms.Repositories.UserRepository;
 using Microsoft.IdentityModel.Tokens;
@@ -48,6 +49,38 @@ public class AuthService : IAuthService
     
     public async Task<User> RegisterAsync(User user)
     {
-        throw new NotImplementedException();
+        using var scope = _serviceProvider.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+        return await userManager.CreateAsync(user);
+    }
+    
+    public (bool Valid, string Message) ValidateRegisterInput(RegisterInput registerInput)
+    {
+        if (string.IsNullOrWhiteSpace(registerInput.Name))
+        {
+            return (Valid:false, Message: "Name is required");
+        }
+
+        if (string.IsNullOrWhiteSpace(registerInput.Email))
+        {
+            return (Valid:false, Message: "Email is required");
+        }
+        
+        if (string.IsNullOrWhiteSpace(registerInput.Password))
+        {
+            return (Valid:false, Message: "Password is required");
+        }
+        
+        if (string.IsNullOrWhiteSpace(registerInput.ConfirmPassword))
+        {
+            return (Valid:false, Message: "Confirm password is required");
+        }
+
+        if (registerInput.Password != registerInput.ConfirmPassword)
+        {
+            return (Valid:false, Message: "Passwords do not match");
+        }
+        
+        return (Valid:true, Message: "Valid");
     }
 }

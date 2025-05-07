@@ -13,4 +13,5 @@ public class User
     public bool IsDeleted { get; set; }
     public bool IsAdmin { get; set; }
     public List<Movie>? Movies { get; set; }
+    public List<User?> Friends { get; set; }
 }
