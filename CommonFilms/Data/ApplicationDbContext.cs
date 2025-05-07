@@ -18,6 +18,10 @@ public class ApplicationDbContext : DbContext
             .WithOne()
             .HasForeignKey(m => m.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<User>()
+            .HasMany(x => x.Friends)
+            .WithMany()
+            .UsingEntity(y => y.ToTable("UserFriends"));
     }
 
     public static void SeedData(ApplicationDbContext context)
