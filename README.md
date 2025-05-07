@@ -1,1 +1,1 @@
-# App for easy movie-night pickings
+# App for an easy movie-night pickings
