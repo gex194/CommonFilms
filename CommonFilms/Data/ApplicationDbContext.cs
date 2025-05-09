@@ -31,9 +31,11 @@ public class ApplicationDbContext : DbContext
             context.Users.AddRange(
                 new User
                 {
+                    Id = 1,
                     Name = "Admin",
                     Email = "test@test.com",
-                    Password = "test"
+                    Password = "test",
+                    IsAdmin = true,
                 }
             );
             context.SaveChanges();

@@ -28,7 +28,7 @@ public class AuthController : ControllerBase
         }
 
         var token = _authService.GenerateJwtToken(user);
-        return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+        return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), user });
     }
 
     [HttpPost("register")]

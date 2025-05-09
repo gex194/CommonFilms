@@ -20,34 +20,41 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByIdAsync(int id)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+        return await _dbContext.Users
+            .Include(x => x.Movies)
+            .Include(x => x.Friends)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<User?> GetByEmailAsync(string email)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+        return await _dbContext.Users
+            .Include(x => x.Movies)
+            .Include(x => x.Friends)
+            .FirstOrDefaultAsync(x => x.Email == email);
     }
 
     public async Task<User?> GetByEmailAndPasswordAsync(string email, string password)
     {
         return await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);;
+            .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+        ;
     }
-    
+
     public async Task<User> CreateAsync(User user)
     {
         await _dbContext.Users.AddAsync(user);
         await _dbContext.SaveChangesAsync();
         return user;
     }
-    
+
     public async Task<User> UpdateAsync(User user)
     {
         _dbContext.Users.Update(user);
-         await _dbContext.SaveChangesAsync();
-         return user;
+        await _dbContext.SaveChangesAsync();
+        return user;
     }
-    
+
     public async Task<bool> DeleteAsync(int id)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
@@ -55,6 +62,7 @@ public class UserRepository : IUserRepository
         {
             return false;
         }
+
         _dbContext.Users.Remove(user);
         await _dbContext.SaveChangesAsync();
         return true;

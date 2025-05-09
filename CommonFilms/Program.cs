@@ -15,6 +15,11 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod());
+});
+
 //Adding JWT Authentication
 builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
 {
@@ -60,5 +65,7 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     ApplicationDbContext.SeedData(dbContext);
 }
+
+app.UseCors();
 
 app.Run();
