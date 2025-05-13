@@ -20,6 +20,15 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod());
 });
 
+//Adding HttpClient to TMDB
+builder.Services.AddHttpClient("TheMovieDB", client =>
+{
+    var apiKey = Environment.GetEnvironmentVariable("TMDB_API_KEY");
+    client.BaseAddress = new Uri("https://api.themoviedb.org/3/");
+    client.DefaultRequestHeaders.Add("Authorization", "Bearer " + apiKey);
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
 //Adding JWT Authentication
 builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
 {
